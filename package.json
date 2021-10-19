@@ -1,6 +1,6 @@
 {
   "name": "dotnetwatchattach",
-  "displayName": "Dotnet Watch Attach",
+  "displayName": ".NET Watch Attach",
   "description": "Wrapper for coreclr attach which automatically attaches when a given program gets launched.",
   "version": "0.0.1",
   "engines": {
