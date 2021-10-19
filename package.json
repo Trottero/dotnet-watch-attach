@@ -2,7 +2,7 @@
   "name": "dotnetwatchattach",
   "displayName": ".NET Watch Attach",
   "description": "Wrapper for coreclr attach which automatically attaches when a given program gets launched.",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "Trottero",
   "contributors": [
     {
@@ -75,7 +75,7 @@
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
-    "deploy": "vscde publish minor --yarn --githubBranch main"
+    "deploy": "vscde publish --yarn --githubBranch main"
   },
   "devDependencies": {
     "@types/glob": "^7.1.4",
