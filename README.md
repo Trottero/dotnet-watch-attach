@@ -4,6 +4,8 @@
 
 `dotnet-watch-attach` is a very simple extension which supports developers working with the `dotnet watch` ([link](https://docs.microsoft.com/en-us/aspnet/core/tutorials/dotnet-watch?view=aspnetcore-5.0)) command. It is basically a simple wrapper around the `coreclr` debugger from the c# extension which watches your process list for a given processname.
 
+- [Extension page](https://marketplace.visualstudio.com/items?itemName=Trottero.dotnetwatchattach)
+
 ## Requirements
 
 - Microsofts C# extension ([link](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp))
