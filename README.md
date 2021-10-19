@@ -76,4 +76,6 @@ Configuration is simple, you need two tasks: one to start watching and one termi
 
 None yet...
 
+Please create and issue / PR for any problems you may encounter.
+
 ---
