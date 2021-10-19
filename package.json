@@ -2,7 +2,7 @@
   "name": "dotnetwatchattach",
   "displayName": ".NET Watch Attach",
   "description": "Wrapper for coreclr attach which automatically attaches when a given program gets launched.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "publisher": "Trottero",
   "contributors": [
     {
@@ -69,7 +69,7 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm install && npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
