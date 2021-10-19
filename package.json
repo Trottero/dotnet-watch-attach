@@ -75,7 +75,7 @@
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
-    "deploy": "vscde publish"
+    "deploy": "vscde publish minor --yarn --githubBranch main"
   },
   "devDependencies": {
     "@types/glob": "^7.1.4",
