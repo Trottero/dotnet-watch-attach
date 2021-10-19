@@ -7,8 +7,10 @@ export interface WatchAttachDebugConfiguration extends DebugConfiguration {
   program: string;
 }
 
+export const WATCH_ATTACH_AUTO_NAME = '.NET Watch Attach (Child attach)';
+
 export const defaultCoreClrDebugConfiguration = {
   type: 'coreclr',
   request: 'attach',
-  name: '.NET Watch Attach Auto',
+  name: WATCH_ATTACH_AUTO_NAME,
 };

@@ -1,10 +1,11 @@
 'use strict';
 
-import { timeout } from 'rxjs';
 import * as vscode from 'vscode';
 import { ProviderResult } from 'vscode';
 import { WatchAttach } from './watchAttach';
 import { WatchAttachSession } from './watchAttachSession';
+
+let watchAttachService: WatchAttach = new WatchAttach();
 
 export function activateWatchAttach(context: vscode.ExtensionContext) {
   const provider = new WatchAttachConfigurationProvider();
@@ -19,9 +20,10 @@ export function activateWatchAttach(context: vscode.ExtensionContext) {
     )
   );
 
-  setTimeout(() => {
-    WatchAttach.startWatchScanner();
-  }, 200);
+  // Also dispose of the watchAttach service
+  context.subscriptions.push(watchAttachService);
+
+  watchAttachService.startWatchAttach();
 }
 
 class WatchAttachConfigurationProvider implements vscode.DebugConfigurationProvider {
@@ -46,8 +48,6 @@ class WatchAttachConfigurationProvider implements vscode.DebugConfigurationProvi
     if (!config.args) {
       config.args = {};
     }
-
-    WatchAttach.config = config;
 
     return config;
   }
