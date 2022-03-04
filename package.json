@@ -35,15 +35,22 @@
         "type": "dotnetwatchattach",
         "label": ".NET Watch Attach",
         "configurationAttributes": {
-          "attach": {
+          "launch": {
+            "required": [
+              "program"
+            ],
             "properties": {
               "args": {
                 "type": "object",
-                "Description": "Arguments passed to coreclr attach"
+                "description": "Arguments passed to underlying coreclr attach"
               },
               "program": {
                 "type": "string",
-                "Description": "Name of exe that dotnet attach has to attach to"
+                "description": "Program to attach to. This is usually the name of the startup `.csproj` file with the `.exe` extension appended. \n e.g. to debug the process from `dotnet watch run weather.csproj`, set this to `weather.exe`. Do note that this is different depending on your dotnet version."
+              },
+              "task": {
+                "type": "string",
+                "description": "The label of a dotnet watch task to run as defined in `tasks.json` \n This task will automatically be run when the debug session starts, and terminated when the debug session ends. \n NOTE: It is not required to set `isBackground: true` for this task."
               }
             }
           }
