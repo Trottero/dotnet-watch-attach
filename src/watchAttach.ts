@@ -27,6 +27,8 @@ export class WatchAttach implements Disposable {
 
   private _session: vscode.DebugSession | null = null;
 
+  private _taskExecution: Thenable<vscode.TaskExecution> | null = null;
+
   private _pollingInterval = 100;
 
   private _tryAttachSubscription: Subscription;
@@ -50,10 +52,18 @@ export class WatchAttach implements Disposable {
 
   public startWatchAttach() {
     const onStartDebug = vscode.debug.onDidStartDebugSession((debugSession) => {
-      if (debugSession.type === 'dotnetwatchattach') {
-        // Upon starting the debug session, store the parent in this service and try to attach a .NET debugger
-        this._session = debugSession;
-        this._tryAttach.next(debugSession);
+      // Only start if it was started by this extension.
+      if (debugSession.type !== 'dotnetwatchattach') {
+        return;
+      }
+
+      // Upon starting the debug session, store the parent in this service and try to attach a .NET debugger
+      this._session = debugSession;
+      this._tryAttach.next(debugSession);
+
+      // If the user has defined a specific task to run, run it.
+      if (this.config.task) {
+        this.startExternalTask(this.config.task);
       }
     });
     this._disposables.push(onStartDebug);
@@ -67,10 +77,18 @@ export class WatchAttach implements Disposable {
           this._tryAttach.next(this._session as vscode.DebugSession);
         }
       }
-      // If parent process was closed
+
+      // If parent process was closed (the user stopped the debug session)
       if (debugSession.type === 'dotnetwatchattach') {
-        debugSession.type;
         this._session = null;
+
+        // Dispose of the task execution if it exists.
+        if (this._taskExecution !== null) {
+          this._taskExecution.then((taskExecution) => {
+            taskExecution.terminate();
+            this._taskExecution = null;
+          });
+        }
       }
     });
     this._disposables.push(onTerminateDebug);
@@ -118,6 +136,23 @@ export class WatchAttach implements Disposable {
       });
       return result.includes(programName);
     }
+  }
+
+  private startExternalTask(taskName: string): void {
+    vscode.tasks.fetchTasks().then((taskList) => {
+      const taskDefinition = taskList.filter((task) => task.name === taskName)?.[0];
+      if (!taskDefinition) {
+        // Let the user know that the task is not found.
+        vscode.window.showErrorMessage(
+          `Debugger can not be started, task "${taskName}" not found. Check if it is defined in your tasks.json file.`,
+          'Close'
+        );
+        vscode.debug.stopDebugging(this._session as vscode.DebugSession);
+        return;
+      }
+
+      this._taskExecution = vscode.tasks.executeTask(taskDefinition);
+    });
   }
 
   dispose() {

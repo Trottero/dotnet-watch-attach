@@ -28,8 +28,7 @@ Configuration is simple, you need two tasks: one to start watching and one termi
           "ASPNETCORE_ENVIRONMENT": "Development"
         }
       },
-      "preLaunchTask": "watch",
-      "postDebugTask": "terminatewatch",
+      "task": "watchTaskName", // Label of watch task in tasks.json
       "program": "<startup-project-name>.exe"
     }
   ]
@@ -40,15 +39,6 @@ Configuration is simple, you need two tasks: one to start watching and one termi
 // tasks.json
 {
   "version": "2.0.0",
-  "inputs": [
-    // Little trick to automatically terminate watch task.
-    {
-      "id": "terminatewatchparam",
-      "type": "command",
-      "command": "workbench.action.tasks.terminate",
-      "args": "watch"
-    }
-  ],
   "tasks": [
     {
       "label": "watch",
@@ -61,14 +51,7 @@ Configuration is simple, you need two tasks: one to start watching and one termi
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
-      "problemMatcher": "$msCompile",
-      "isBackground": true
-    },
-    {
-      "label": "terminatewatch",
-      "type": "shell",
-      "command": "echo ${input:terminatewatchparam}",
-      "problemMatcher": []
+      "problemMatcher": "$msCompile"
     }
   ]
 }
@@ -78,8 +61,6 @@ Configuration is simple, you need two tasks: one to start watching and one termi
 
 ## Known Issues
 
-None yet...
+- There is a race condition where the extension checks if the proces exists, and if it does it will try to start a debug session moments later. If during that time the process is killed (by rebuilding for example) the debugger will fail to attach and terminate.
 
-Please create and issue / PR for any problems you may encounter.
-
----
+Please create an [issue / PR](https://github.com/Trottero/dotnet-watch-attach/issues) for any problems you may encounter.
