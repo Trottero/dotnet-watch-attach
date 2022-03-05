@@ -12,7 +12,7 @@
 
 ## Configuration
 
-Configuration is simple, you need two tasks: one to start watching and one terminate the watch task and then the `dotnet-watch-attach` debug configuration. The `coreclr` attach task is fully configurable using the `args` property. A fully configured example can be found [here](https://github.com/Trottero/dotnet-watch-attach-sample)
+Configuration is simple, since `0.2.0` you will only need a single task which defines a command that uses the `dotnet watch` command. This task is then used in the `dotnetwatchattach` debug configuration. For the `task` property, use the label for the earlier defined task. The `coreclr` attach task is fully configurable using the `args` property. A fully configured example can be found [here](https://github.com/Trottero/dotnet-watch-attach-sample)
 
 ```
 // launch.json
