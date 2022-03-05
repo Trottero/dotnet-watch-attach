@@ -142,7 +142,7 @@ export class WatchAttach implements Disposable {
     vscode.tasks.fetchTasks().then((taskList) => {
       const taskDefinition = taskList.filter((task) => task.name === taskName)?.[0];
       if (!taskDefinition) {
-        // Do some nice error message or something.
+        // Let the user know that the task is not found.
         vscode.window.showErrorMessage(
           `Debugger can not be started, task "${taskName}" not found. Check if it is defined in your tasks.json file.`,
           'Close'
