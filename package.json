@@ -2,7 +2,7 @@
   "name": "dotnetwatchattach",
   "displayName": ".NET Watch Attach",
   "description": "Wrapper for coreclr attach which automatically attaches when a given program gets launched by `dotnet watch`.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "publisher": "Trottero",
   "contributors": [
     {
@@ -46,7 +46,7 @@
               },
               "program": {
                 "type": "string",
-                "description": "Program to attach to. This is usually the name of the startup `.csproj` file with the `.exe` extension appended. \n e.g. to debug the process from `dotnet watch run weather.csproj`, set this to `weather.exe`. Do note that this is different depending on your dotnet version."
+                "description": "Program to attach to. This is usually the name of the startup `.csproj` file, with for windows the `.exe` extension appended. \n e.g. to debug the process from `dotnet watch run weather.csproj`, set this to `weather.exe` (windows) or `weather` (linux). Do note that this is different depending on your dotnet version."
               },
               "task": {
                 "type": "string",

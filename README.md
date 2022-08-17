@@ -29,7 +29,7 @@ Configuration is simple, since `0.2.0` you will only need a single task which de
         }
       },
       "task": "watchTaskName", // Label of watch task in tasks.json
-      "program": "<startup-project-name>.exe"
+      "program": "<startup-project-name>.exe" // for windows Or "<startup-project-name>" for linux
     }
   ]
 }
@@ -44,6 +44,14 @@ Configuration is simple, since `0.2.0` you will only need a single task which de
       "label": "watch",
       "command": "dotnet",
       "type": "process",
+       "linux": {
+        "options": {
+          "env": {
+            // The FileSystemWatcher used by default wasnt working for me on linux, so I switched to the polling watcher.
+            "DOTNET_USE_POLLING_FILE_WATCHER": "true"
+          }
+        }
+      },
       "args": [
         "watch",
         "run",

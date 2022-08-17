@@ -129,13 +129,14 @@ export class WatchAttach implements Disposable {
         encoding: 'utf8',
       });
       return result.includes(programName);
-    } else {
-      let args = ['-o pid, ppid, command'];
+    } else if (process.platform === 'linux') {
+      const args = ['-axo', 'fname'];
       const result = execFileSync('ps', args, {
         encoding: 'utf8',
       });
       return result.includes(programName);
     }
+    return false;
   }
 
   private startExternalTask(taskName: string): void {
