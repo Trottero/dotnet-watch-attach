@@ -135,6 +135,12 @@ export class WatchAttach implements Disposable {
         encoding: 'utf8',
       });
       return result.includes(programName);
+    } else if (process.platform === 'darwin') {
+      const args = ['-aco', 'command'];
+      const result = execFileSync('ps', args, {
+        encoding: 'utf8',
+      });
+      return result.includes(programName);
     }
     return false;
   }
