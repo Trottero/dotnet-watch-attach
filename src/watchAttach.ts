@@ -130,7 +130,7 @@ export class WatchAttach implements Disposable {
       });
       return result.includes(programName);
     } else if (process.platform === 'linux') {
-      const args = ["-eo","cmd"];
+      const args = ['-eo', 'cmd'];
       const result = execFileSync('ps', args, {
         encoding: 'utf8',
       });
