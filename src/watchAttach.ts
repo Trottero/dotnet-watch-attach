@@ -130,11 +130,11 @@ export class WatchAttach implements Disposable {
       });
       return result.includes(programName);
     } else if (process.platform === 'linux') {
-      const args = ['-axo', 'fname'];
+      const args = ['-eo', 'cmd'];
       const result = execFileSync('ps', args, {
         encoding: 'utf8',
       });
-      return result.includes(programName);
+      return result.includes(`/${programName} `);
     } else if (process.platform === 'darwin') {
       const args = ['-aco', 'command'];
       const result = execFileSync('ps', args, {
