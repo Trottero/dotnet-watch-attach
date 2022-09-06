@@ -25,3 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Support for `dotnetwatchattach` to manage the lifetime of a specified task by defining the `task` parameter in your launch.json. I no longer advise you to use the `preLaunchTask` and `postLaunchTask` configuration properties. This has the added benefit that the `isBackground: true` property is no longer required for the task definition (fixes [#1](https://github.com/Trottero/dotnet-watch-attach/issues/1)).
+
+## [0.2.4] - 2022-09-06
+
+### Added
+
+- Support for `darwin` (Thanks [loganbenjamin](https://github.com/loganbenjamin)!) and `linux` platforms (closes [#5](https://github.com/Trottero/dotnet-watch-attach/issues/5), [#6](https://github.com/Trottero/dotnet-watch-attach/issues/6))
