@@ -128,7 +128,7 @@ export class WatchAttach implements Disposable {
       const result = execFileSync('powershell.exe', args, {
         encoding: 'utf8',
       });
-      return result.includes(programName);
+      return result.includes(programName.slice(0, 25));
     } else if (process.platform === 'linux') {
       const args = ['-eo', 'cmd'];
       const result = execFileSync('ps', args, {
