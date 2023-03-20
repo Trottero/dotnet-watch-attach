@@ -1,9 +1,9 @@
+import { execFileSync } from 'child_process';
 import {
   BehaviorSubject,
   catchError,
   delay,
   from,
-  map,
   mapTo,
   Observable,
   of,
@@ -13,15 +13,14 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { Disposable } from 'vscode';
 import * as vscode from 'vscode';
-import { execFileSync } from 'child_process';
+import { Disposable } from 'vscode';
+import { WatchAttachLogger } from './logging/watchAttachLogger';
 import {
   defaultCoreClrDebugConfiguration,
   WatchAttachDebugConfiguration,
   WATCH_ATTACH_AUTO_NAME,
 } from './models/watchAttachDebugConfiguration';
-import { WatchAttachLogger } from './logging/watchAttachLogger';
 
 export class WatchAttach implements Disposable {
   public get config(): WatchAttachDebugConfiguration {
