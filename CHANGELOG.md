@@ -31,3 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Support for `darwin` (Thanks [loganbenjamin](https://github.com/loganbenjamin)!) and `linux` platforms (closes [#5](https://github.com/Trottero/dotnet-watch-attach/issues/5), [#6](https://github.com/Trottero/dotnet-watch-attach/issues/6))
+
+## [0.2.6] - 2023-03-20
+
+### Added
+
+- More strict regex for linux based system (fixes [#12](https://github.com/Trottero/dotnet-watch-attach/issues/12))
+- Added simple logging system for future debugging purposes.
