@@ -2,12 +2,16 @@ import {
   BehaviorSubject,
   catchError,
   delay,
+  from,
+  map,
+  mapTo,
   Observable,
   of,
   retryWhen,
   Subject,
   Subscription,
   switchMap,
+  tap,
 } from 'rxjs';
 import { Disposable } from 'vscode';
 import * as vscode from 'vscode';
@@ -17,6 +21,7 @@ import {
   WatchAttachDebugConfiguration,
   WATCH_ATTACH_AUTO_NAME,
 } from './models/watchAttachDebugConfiguration';
+import { WatchAttachLogger } from './logging/watchAttachLogger';
 
 export class WatchAttach implements Disposable {
   public get config(): WatchAttachDebugConfiguration {
@@ -35,13 +40,28 @@ export class WatchAttach implements Disposable {
 
   private _disposables: Disposable[] = [];
 
+  private _watchAttachLogger = WatchAttachLogger.instance;
+
+  private _errorCount = 0;
+
   constructor() {
     this._tryAttachSubscription = this._tryAttach
       .pipe(
         switchMap((debugSession) =>
           this.attach(debugSession).pipe(
-            retryWhen((errors) => errors.pipe(delay(this._pollingInterval))),
-            catchError((x) => {
+            retryWhen((errors) =>
+              errors.pipe(
+                tap((_) => {
+                  if (this._errorCount >= 5) {
+                    throw new Error('Error count has reached 5 - stopping retry attempts');
+                  }
+                }),
+                delay(this._pollingInterval)
+              )
+            ),
+            catchError((error: Error) => {
+              this._watchAttachLogger.log('Error occurred: ' + error.message);
+              this._watchAttachLogger.log('If you see this, please file an issue on GitHub');
               return of(5);
             })
           )
@@ -72,6 +92,7 @@ export class WatchAttach implements Disposable {
       // If the automatically created process was terminated
       // This is also what happens when the application reload
       if (debugSession.name === WATCH_ATTACH_AUTO_NAME) {
+        this._watchAttachLogger.log('Child debug session terminated, restarting...');
         // Use the existing session as param.
         if (this._session !== null) {
           this._tryAttach.next(this._session as vscode.DebugSession);
@@ -80,10 +101,14 @@ export class WatchAttach implements Disposable {
 
       // If parent process was closed (the user stopped the debug session)
       if (debugSession.type === 'dotnetwatchattach') {
+        this._watchAttachLogger.log('Host debug session terminated, cleaning up...');
         this._session = null;
 
         // Dispose of the task execution if it exists.
         if (this._taskExecution !== null) {
+          this._watchAttachLogger.log(
+            'A task was configured; terminating the task launched by Watch Attach'
+          );
           this._taskExecution.then((taskExecution) => {
             taskExecution.terminate();
             this._taskExecution = null;
@@ -103,21 +128,38 @@ export class WatchAttach implements Disposable {
           throw new Error('Application not running');
         }
 
+        this._watchAttachLogger.log(`Attaching to ${this.config.program}...`);
+
         // Start coreclr debug session.
-        vscode.debug.startDebugging(
-          undefined,
-          {
-            ...this.config.args,
-            ...defaultCoreClrDebugConfiguration,
-            processName: this.config.program,
-          },
-          {
-            parentSession: watchAttachSession,
-            consoleMode: vscode.DebugConsoleMode.MergeWithParent,
-            compact: true,
-          }
-        );
-        return of(0);
+        return from(
+          vscode.debug
+            .startDebugging(
+              undefined,
+              {
+                ...this.config.args,
+                ...defaultCoreClrDebugConfiguration,
+                processName: this.config.program,
+              },
+              {
+                parentSession: watchAttachSession,
+                consoleMode: vscode.DebugConsoleMode.MergeWithParent,
+                compact: true,
+              }
+            )
+            .then((success) => {
+              if (!success) {
+                this._watchAttachLogger.log(
+                  `The running program check passed but Watch Attach failed to attach to ${
+                    this.config.program
+                  }, count: ${this._errorCount + 1}`
+                );
+                this._errorCount++;
+                throw new Error('Application not running');
+              }
+              this._watchAttachLogger.log(`Successfully attached to ${this.config.program}`);
+              this._errorCount = 0;
+            })
+        ).pipe(mapTo(this._errorCount));
       })
     );
   }
@@ -134,7 +176,8 @@ export class WatchAttach implements Disposable {
       const result = execFileSync('ps', args, {
         encoding: 'utf8',
       });
-      return result.includes(`/${programName} `);
+      const reg = new RegExp(`\/bin.*\/net.*\/${programName}`);
+      return reg.test(result);
     } else if (process.platform === 'darwin') {
       const args = ['-aco', 'command'];
       const result = execFileSync('ps', args, {
