@@ -38,3 +38,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - More strict regex for linux based system (fixes [#12](https://github.com/Trottero/dotnet-watch-attach/issues/12))
 - Added simple logging system for future debugging purposes.
+
+## [0.2.7] - 2024-04-24
+
+### Fixed
+
+- The process responsible for scanning now bypasses PowerShell profiles (Closes [#17](https://github.com/Trottero/dotnet-watch-attach/issues/17), Thanks [hackathi](https://github.com/hackathi)!)
