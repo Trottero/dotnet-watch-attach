@@ -165,7 +165,7 @@ export class WatchAttach implements Disposable {
 
   public applicationRunning(programName: string): boolean {
     if (process.platform === 'win32') {
-      const args = ['tasklist', '/fi', `"IMAGENAME eq ${programName}"`];
+      const args = ['-NoProfile', 'tasklist', '/fi', `"IMAGENAME eq ${programName}"`];
       const result = execFileSync('powershell.exe', args, {
         encoding: 'utf8',
       });
